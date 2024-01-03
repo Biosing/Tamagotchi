@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  db:
+    container_name: db
+    image: postgres
+    environment:
+      POSTGRES_DB: Tamagotchi
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123123123
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U habrpguser -d habrdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  app:
+    container_name: app
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+volumes:
+  postgres_data:
