@@ -1,0 +1,107 @@
+basePath: /api/v1
+host: localhost:8080
+info:
+  contact: {}
+  description: Это API для приложения Tamagotchi.
+  termsOfService: http://localhost:8080/terms/
+  title: Tamagotchi API
+  version: "1"
+paths:
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: возвращает список всех пользователей
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Получение списка пользователей
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: создает нового пользователя
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Создание нового пользователя
+      tags:
+      - users
+  /user/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: удаляет пользователя по ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Удаление пользователя
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: возвращает информацию о пользователе по ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Получение информации о пользователе
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: обновляет информацию о пользователе
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Обновление пользователя
+      tags:
+      - users
+schemes:
+- http
+swagger: "2.0"
