@@ -6,33 +6,66 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// GetUsers обрабатывает GET-запросы для получения списка пользователей
+// @Summary Получение списка пользователей
+// @Description возвращает список всех пользователей
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} map[string]interface{}
+// @Router /user [get]
 func GetUsers(c *gin.Context) {
 	// Реализация логики получения пользователей
 	c.JSON(http.StatusOK, gin.H{"message": "Список пользователей"})
 }
 
-// CreateUser обрабатывает POST-запросы для создания нового пользователя
+// @Summary Создание нового пользователя
+// @Description создает нового пользователя
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} map[string]interface{}
+// @Router /user [post]
 func CreateUser(c *gin.Context) {
 	// Реализация логики создания пользователя
 	c.JSON(http.StatusOK, gin.H{"message": "Пользователь создан"})
 }
 
-// GetUser обрабатывает GET-запросы для получения информации о конкретном пользователе
+// @Summary Получение информации о пользователе
+// @Description возвращает информацию о пользователе по ID
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param id path int true "User ID"
+// @Success 200 {object} map[string]interface{}
+// @Router /user/{id} [get]
 func GetUser(c *gin.Context) {
 	id := c.Param("id") // Получение ID пользователя из URL
 	// Реализация логики получения данных пользователя
 	c.JSON(http.StatusOK, gin.H{"message": "Информация о пользователе", "id": id})
 }
 
-// UpdateUser обрабатывает PUT-запросы для обновления информации о пользователе
+// @Summary Обновление пользователя
+// @Description обновляет информацию о пользователе
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param id path int true "User ID"
+// @Success 200 {object} map[string]interface{}
+// @Router /user/{id} [put]
 func UpdateUser(c *gin.Context) {
 	id := c.Param("id") // Получение ID пользователя из URL
 	// Реализация логики обновления данных пользователя
 	c.JSON(http.StatusOK, gin.H{"message": "Данные пользователя обновлены", "id": id})
 }
 
-// DeleteUser обрабатывает DELETE-запросы для удаления пользователя
+// @Summary Удаление пользователя
+// @Description удаляет пользователя по ID
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param id path int true "User ID"
+// @Success 200 {object} map[string]interface{}
+// @Router /user/{id} [delete]
 func DeleteUser(c *gin.Context) {
 	id := c.Param("id") // Получение ID пользователя из URL
 	// Реализация логики удаления пользователя
