@@ -10,6 +10,18 @@ import (
 	_ "github.com/lib/pq"
 )
 
+// @title Tamagotchi API
+// @version 1
+// @description Это API для приложения Tamagotchi.
+// @termsOfService http://localhost:8080/terms/
+// @BasePath /api/v1
+// @schemes http
+// @host localhost:8080
+// @contact name: Vladislav email: Biosing@yandex.ru
+
+// @securityDefinitions.cookie AuthCookie
+// @name Auth
+// @in cookie
 func main() {
 	// Строка подключения к базе данных
 	connStr := "postgres://postgres:123123123@db:5432/Tamagotchi?sslmode=disable"
