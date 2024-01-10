@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Tamagotchi/handlers"
+	"Tamagotchi/internal/handler"
 
 	"github.com/gin-gonic/gin"
 
@@ -13,18 +13,17 @@ import (
 
 // swagger embed files
 
-func SetupRouter() *gin.Engine {
+func SetupRouter(s handler.Services) *gin.Engine {
 	r := gin.Default()
-
 	apiV1 := r.Group("/api/v1")
 	{
 		userGroup := apiV1.Group("/user")
 		{
-			userGroup.GET("/", handlers.GetUsers)
-			userGroup.POST("/", handlers.CreateUser)
-			userGroup.GET("/:id", handlers.GetUser)
-			userGroup.PUT("/:id", handlers.UpdateUser)
-			userGroup.DELETE("/:id", handlers.DeleteUser)
+			userGroup.GET("/", s.User.GetUsers)
+			userGroup.POST("/", s.User.CreateUser)
+			userGroup.GET("/:id", s.User.GetUser)
+			userGroup.PUT("/:id", s.User.UpdateUser)
+			userGroup.DELETE("/:id", s.User.DeleteUser)
 		}
 	}
 	// Маршруты для пользователей
