@@ -1,105 +1,106 @@
 basePath: /api/v1
+definitions:
+  schema.AuthorizationSchema:
+    properties:
+      login_or_email:
+        type: string
+      password:
+        type: string
+    required:
+    - login_or_email
+    - password
+    type: object
+  schema.RegistrationSchema:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+      login:
+        type: string
+      password:
+        minLength: 8
+        type: string
+    required:
+    - email
+    - full_name
+    - login
+    - password
+    type: object
 host: localhost:8080
 info:
   contact: {}
-  description: Это API для приложения Tamagotchi.
+  description: This is the API for the Tamagotchi application.
   termsOfService: http://localhost:8080/terms/
   title: Tamagotchi API
   version: "1"
 paths:
-  /user:
-    get:
-      consumes:
-      - application/json
-      description: возвращает список всех пользователей
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Получение списка пользователей
-      tags:
-      - users
+  /user/auth:
     post:
       consumes:
       - application/json
-      description: создает нового пользователя
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Создание нового пользователя
-      tags:
-      - users
-  /user/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: удаляет пользователя по ID
       parameters:
-      - description: User ID
-        in: path
-        name: id
+      - description: AuthorizationSchema
+        in: body
+        name: data
         required: true
-        type: integer
+        schema:
+          $ref: '#/definitions/schema.AuthorizationSchema'
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "400":
+          description: Bad Request
           schema:
-            additionalProperties: true
             type: object
-      summary: Удаление пользователя
+        "500":
+          description: Internal Server Error
+          schema:
+            type: object
+      summary: Authorization
       tags:
       - users
+  /user/logout:
     get:
       consumes:
       - application/json
-      description: возвращает информацию о пользователе по ID
-      parameters:
-      - description: User ID
-        in: path
-        name: id
-        required: true
-        type: integer
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "400":
+          description: Bad Request
           schema:
-            additionalProperties: true
             type: object
-      summary: Получение информации о пользователе
+        "500":
+          description: Internal Server Error
+          schema:
+            type: object
+      summary: Logout
       tags:
       - users
-    put:
+  /user/registration:
+    post:
       consumes:
       - application/json
-      description: обновляет информацию о пользователе
       parameters:
-      - description: User ID
-        in: path
-        name: id
+      - description: RegistrationSchema
+        in: body
+        name: data
         required: true
-        type: integer
+        schema:
+          $ref: '#/definitions/schema.RegistrationSchema'
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "400":
+          description: Bad Request
           schema:
-            additionalProperties: true
             type: object
-      summary: Обновление пользователя
+        "500":
+          description: Internal Server Error
+          schema:
+            type: object
+      summary: Registration
       tags:
       - users
 schemes:
