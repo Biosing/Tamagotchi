@@ -1,4 +1,4 @@
-package main
+package http
 
 import (
 	"Tamagotchi/internal/handler"
@@ -11,20 +11,11 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// swagger embed files
-
 func SetupRouter(s handler.Services) *gin.Engine {
 	r := gin.Default()
 	apiV1 := r.Group("/api/v1")
 	{
-		userGroup := apiV1.Group("/user")
-		{
-			userGroup.GET("/", s.User.GetUsers)
-			userGroup.POST("/", s.User.CreateUser)
-			userGroup.GET("/:id", s.User.GetUser)
-			userGroup.PUT("/:id", s.User.UpdateUser)
-			userGroup.DELETE("/:id", s.User.DeleteUser)
-		}
+		SetupAuthenticationRouter(apiV1, s)
 	}
 	// Маршруты для пользователей
 

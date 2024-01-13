@@ -1,23 +1,21 @@
 package model
 
 import (
+	"Tamagotchi/internal/schema"
 	"context"
 
 	"github.com/gin-gonic/gin"
 )
 
-type UserRepository interface {
-	GetUsers(ctx context.Context)
-	CreateUser(ctx context.Context)
-	GetUser(ctx context.Context)
-	UpdateUser(ctx context.Context)
-	DeleteUser(ctx context.Context)
+type AuthRepository interface {
+	Registration(ctx context.Context, user *User) error
+	GetUserByEmailOrLogin(ctx context.Context, loginOrEmail string) (*User, error)
+	SaveSession(c context.Context, session *Session) error
+	CheckSession(c context.Context, sessionID string) (*Session, error)
 }
 
-type UserService interface {
-	GetUsers(c *gin.Context)
-	CreateUser(c *gin.Context)
-	GetUser(c *gin.Context)
-	UpdateUser(c *gin.Context)
-	DeleteUser(c *gin.Context)
+type AuthService interface {
+	Registration(ctx context.Context, payload *schema.RegistrationSchema) error
+	Authorization(ctx *gin.Context, payload *schema.AuthorizationSchema) error
+	Logout(ctx *gin.Context) error
 }

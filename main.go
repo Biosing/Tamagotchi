@@ -6,10 +6,13 @@ import (
 
 	"Tamagotchi/internal/database"
 
+	"fmt"
+
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/lib/pq"
+	"github.com/spf13/viper"
 )
 
 // @title Tamagotchi API
@@ -25,7 +28,18 @@ import (
 // @name Auth
 // @in cookie
 func main() {
-	connStr := "postgres://postgres:123123123@db:5432/Tamagotchi?sslmode=disable"
+	initViper()
+
+	dbHost := viper.GetString("DB_HOST")
+	dbPort := viper.GetString("DB_PORT")
+	dbUser := viper.GetString("DB_USER")
+	dbPassword := viper.GetString("DB_PASSWORD")
+	dbName := viper.GetString("DB_NAME")
+	dbSslmode := viper.GetString("DB_SSLMODE")
+
+	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s",
+		dbUser, dbPassword, dbHost, dbPort, dbName, dbSslmode)
+
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatalf("Failed to connect to the database: %v", err)
@@ -61,5 +75,17 @@ func main() {
 
 	log.Println("Migration successfully applied")
 
-	router.Run(":8080")
+	runPort := viper.GetString("APP_PORT")
+	router.Run(runPort)
+}
+
+func initViper() {
+	viper.SetConfigFile("config/.env")
+	viper.SetConfigType("env")
+	viper.AutomaticEnv()
+
+	err := viper.ReadInConfig()
+	if err != nil {
+		log.Fatalf("Error reading .env file: %s", err)
+	}
 }

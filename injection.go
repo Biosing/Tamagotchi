@@ -1,11 +1,14 @@
 package main
 
 import (
+	"Tamagotchi/internal/common/middleware"
 	"Tamagotchi/internal/database"
 	"Tamagotchi/internal/handler"
 	"Tamagotchi/internal/repository"
 	"Tamagotchi/internal/service"
 	"log"
+
+	"Tamagotchi/internal/handler/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,15 +16,17 @@ import (
 func inject(d *database.DataSources) (*gin.Engine, error) {
 	log.Println("Start load inject dependencies...")
 
-	userRepo := repository.NewUserRepository(d.DB)
+	authRepo := repository.NewAuthRepository(d.DB)
+	authService := service.NewAuthService(authRepo)
 
-	userService := service.NewUserService(userRepo)
+	authMiddleware := middleware.NewAuthMiddleware(authRepo)
 
 	service := handler.Services{
-		User: userService,
+		Auth:           authService,
+		AuthMiddleware: authMiddleware,
 	}
 
-	router := SetupRouter(service)
+	router := http.SetupRouter(service)
 
 	log.Println("Finish load inject dependencies...")
 	return router, nil

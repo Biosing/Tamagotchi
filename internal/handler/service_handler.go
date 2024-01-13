@@ -1,9 +1,11 @@
 package handler
 
 import (
+	"Tamagotchi/internal/common/middleware"
 	"Tamagotchi/internal/model"
 )
 
 type Services struct {
-	User model.UserService
+	Auth           model.AuthService
+	AuthMiddleware *middleware.AuthMiddleware
 }

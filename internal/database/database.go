@@ -2,8 +2,10 @@ package database
 
 import (
 	"Tamagotchi/internal/model"
+	"fmt"
 	"log"
 
+	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -15,7 +17,15 @@ type DataSources struct {
 func Initialize() (*DataSources, error) {
 	log.Printf("Initializing data sources\n")
 
-	dsn := "host=db user=postgres password=123123123 dbname=Tamagotchi port=5432 sslmode=disable"
+	dbHost := viper.GetString("DB_HOST")
+	dbPort := viper.GetString("DB_PORT")
+	dbUser := viper.GetString("DB_USER")
+	dbPassword := viper.GetString("DB_PASSWORD")
+	dbName := viper.GetString("DB_NAME")
+	dbSslmode := viper.GetString("DB_SSLMODE")
+
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
+		dbHost, dbUser, dbPassword, dbName, dbPort, dbSslmode)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
@@ -23,7 +33,7 @@ func Initialize() (*DataSources, error) {
 	}
 
 	// Выполнение миграции для всех моделей
-	err = db.AutoMigrate(model.User{})
+	err = db.AutoMigrate(&model.User{}, &model.Session{}, &model.Сreature{}, &model.UserCreature{})
 	if err != nil {
 		log.Fatalf("Ошибка миграции: %v", err)
 	}

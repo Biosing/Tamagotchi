@@ -16,9 +16,8 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/user": {
-            "get": {
-                "description": "возвращает список всех пользователей",
+        "/user/auth": {
+            "post": {
                 "consumes": [
                     "application/json"
                 ],
@@ -28,43 +27,36 @@ const docTemplate = `{
                 "tags": [
                     "users"
                 ],
-                "summary": "Получение списка пользователей",
-                "responses": {
-                    "200": {
-                        "description": "OK",
+                "summary": "Authorization",
+                "parameters": [
+                    {
+                        "description": "AuthorizationSchema",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/schema.AuthorizationSchema"
                         }
                     }
-                }
-            },
-            "post": {
-                "description": "создает нового пользователя",
-                "consumes": [
-                    "application/json"
                 ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Создание нового пользователя",
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "type": "object"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object"
                         }
                     }
                 }
             }
         },
-        "/user/{id}": {
+        "/user/logout": {
             "get": {
-                "description": "возвращает информацию о пользователе по ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -74,28 +66,25 @@ const docTemplate = `{
                 "tags": [
                     "users"
                 ],
-                "summary": "Получение информации о пользователе",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
+                "summary": "Logout",
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "type": "object"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object"
                         }
                     }
                 }
-            },
-            "put": {
-                "description": "обновляет информацию о пользователе",
+            }
+        },
+        "/user/registration": {
+            "post": {
                 "consumes": [
                     "application/json"
                 ],
@@ -105,55 +94,72 @@ const docTemplate = `{
                 "tags": [
                     "users"
                 ],
-                "summary": "Обновление пользователя",
+                "summary": "Registration",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
+                        "description": "RegistrationSchema",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.RegistrationSchema"
+                        }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "type": "object"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object"
                         }
                     }
                 }
-            },
-            "delete": {
-                "description": "удаляет пользователя по ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Удаление пользователя",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    }
+            }
+        }
+    },
+    "definitions": {
+        "schema.AuthorizationSchema": {
+            "type": "object",
+            "required": [
+                "login_or_email",
+                "password"
+            ],
+            "properties": {
+                "login_or_email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.RegistrationSchema": {
+            "type": "object",
+            "required": [
+                "email",
+                "full_name",
+                "login",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "login": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 8
                 }
             }
         }
@@ -167,7 +173,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/api/v1",
 	Schemes:          []string{"http"},
 	Title:            "Tamagotchi API",
-	Description:      "Это API для приложения Tamagotchi.",
+	Description:      "This is the API for the Tamagotchi application.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",
