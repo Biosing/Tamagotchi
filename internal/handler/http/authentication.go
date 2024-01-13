@@ -70,7 +70,7 @@ func (a *AuthenticationRouter) AuthHandler(ctx *gin.Context) error {
 
 	err := a.Services.Auth.Authorization(ctx, payload)
 	if err != nil {
-		return err
+		return schema.Respond(err, ctx)
 	}
 
 	return schema.Respond(schema.Empty{}, ctx)
