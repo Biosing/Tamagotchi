@@ -48,6 +48,7 @@ func (nas *authService) Registration(ctx context.Context, payload *schema.Regist
 
 	return nil
 }
+
 func (nas *authService) Authorization(ctx *gin.Context, payload *schema.AuthorizationSchema) error {
 
 	user, err := nas.authRepository.GetUserByEmailOrLogin(ctx, payload.LoginOrEmail)

@@ -2,6 +2,7 @@ package database
 
 import (
 	"Tamagotchi/internal/model"
+	"database/sql"
 	"fmt"
 	"log"
 
@@ -41,6 +42,20 @@ func Initialize() (*DataSources, error) {
 	return &DataSources{
 		DB: db,
 	}, nil
+}
+
+func InitializeDbfromMigration() (*sql.DB, error) {
+	dbHost := viper.GetString("DB_HOST")
+	dbPort := viper.GetString("DB_PORT")
+	dbUser := viper.GetString("DB_USER")
+	dbPassword := viper.GetString("DB_PASSWORD")
+	dbName := viper.GetString("DB_NAME")
+	dbSslmode := viper.GetString("DB_SSLMODE")
+
+	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s",
+		dbUser, dbPassword, dbHost, dbPort, dbName, dbSslmode)
+
+	return sql.Open("postgres", connStr)
 }
 
 func (ds *DataSources) Close() error {

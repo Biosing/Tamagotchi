@@ -1,12 +1,10 @@
 package main
 
 import (
-	"database/sql"
 	"log"
 
+	"Tamagotchi/internal/config"
 	"Tamagotchi/internal/database"
-
-	"fmt"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
@@ -28,19 +26,9 @@ import (
 // @name Auth
 // @in cookie
 func main() {
-	initViper()
+	config.InitViper()
 
-	dbHost := viper.GetString("DB_HOST")
-	dbPort := viper.GetString("DB_PORT")
-	dbUser := viper.GetString("DB_USER")
-	dbPassword := viper.GetString("DB_PASSWORD")
-	dbName := viper.GetString("DB_NAME")
-	dbSslmode := viper.GetString("DB_SSLMODE")
-
-	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s",
-		dbUser, dbPassword, dbHost, dbPort, dbName, dbSslmode)
-
-	db, err := sql.Open("postgres", connStr)
+	db, err := database.InitializeDbfromMigration()
 	if err != nil {
 		log.Fatalf("Failed to connect to the database: %v", err)
 	}
@@ -58,6 +46,13 @@ func main() {
 		log.Fatalf("Failed to create migration instance: %v", err)
 	}
 
+	// Applying migrations
+	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+		log.Fatalf("Migration error: %v", err)
+	}
+
+	log.Println("Migration successfully applied")
+
 	ds, err := database.Initialize()
 	if err != nil {
 		log.Fatalf("Failed to initialize the database: %v", err)
@@ -68,24 +63,6 @@ func main() {
 		log.Fatalf("Injection error: %v", err)
 	}
 
-	// Applying migrations
-	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
-		log.Fatalf("Migration error: %v", err)
-	}
-
-	log.Println("Migration successfully applied")
-
 	runPort := viper.GetString("APP_PORT")
 	router.Run(runPort)
-}
-
-func initViper() {
-	viper.SetConfigFile("config/.env")
-	viper.SetConfigType("env")
-	viper.AutomaticEnv()
-
-	err := viper.ReadInConfig()
-	if err != nil {
-		log.Fatalf("Error reading .env file: %s", err)
-	}
 }
